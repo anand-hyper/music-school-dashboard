@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,70 +24,110 @@ import {
 import { useForm } from "react-hook-form";
 
 interface AddCourseDialogProps {
-  onAddCourse: (course: any) => void;
+  onAddCourse: () => void;
+  course?: any; // Optional prop for course data (used in edit mode)
 }
 
-export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
+export function AddCourseDialog({ onAddCourse, course }: AddCourseDialogProps) {
   const [open, setOpen] = useState(false);
+
   const form = useForm({
     defaultValues: {
-      name: "",
-      description: "",
-      instructor: "",
-      instrument: "",
-      dayOfWeek: "",
-      price: "",
+      Name: course?.Name,
+      Description: course?.Description,
+      Instructor: course?.Instructor,
+      Instrument: course?.Instrument,
+      Dayofweek: course?.Dayofweek,
+      Price: course?.Price,
+      Action: course?.Action || "Yes",
+      Noofstud: course?.Noofstud || 0,
     },
   });
+
+  useEffect(() => {
+    // Update form values when the `course` prop changes
+    if (course) {
+      console.log("sks-->", course)
+      setOpen(true);
+      form.reset({
+        Name: course.Name || "",
+        Description: course.Description,
+        Instructor: course.Instructor,
+        Instrument: course.Instrument,
+        Dayofweek: course.Dayofweek,
+        Price: course.Price,
+        Action: course.Action || "Yes",
+        Noofstud: course.Noofstud || 0,
+      });
+    }
+  }, [course, form]);
 
   const onSubmit = (data: any) => {
     // Fetch the existing courses from localStorage
     const existingCourses = JSON.parse(localStorage.getItem("courses") || "[]");
-    
-    // Append the new course data
-    const updatedCourses = [...existingCourses, data];
+
+    let updatedCourses;
+    if (course) {
+      // Edit mode: Update the existing course
+      updatedCourses = existingCourses.map((c: any) =>
+        c.Name === course.Name ? { ...c, ...data } : c
+      );
+    } else {
+      // Add mode: Append the new course data
+      updatedCourses = [...existingCourses, data];
+    }
 
     // Update the localStorage with the new array
     localStorage.setItem("courses", JSON.stringify(updatedCourses));
-    
-    // Call the callback function (optional)
-    onAddCourse(data);
-    
+
+    // Call the callback function to refresh the table
+    onAddCourse();
+
     // Reset the form and close the dialog
     setOpen(false);
     form.reset();
-    
-    // Reload the page to get updated data from localStorage
-    window.location.reload();
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-pink-200 text-black hover:bg-pink-300">
-          + Add Course
-        </Button>
+        {!course && (
+          <Button className="bg-pink-200 text-black hover:bg-pink-300">
+            + Add Course
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Course</DialogTitle>
+          <DialogTitle>{course ? "Edit Course" : "Add Course"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="Name"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Course Name" {...field} />
+                    <Input
+                      placeholder="Course Name"
+                      {...field}
+                      disabled={!!course}
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
+            {course && (
+              <Input
+                type="hidden"
+                value={course.Name}
+                {...form.register("Name")}
+              />
+            )}
             <FormField
               control={form.control}
-              name="description"
+              name="Description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -98,7 +138,7 @@ export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
             />
             <FormField
               control={form.control}
-              name="instructor"
+              name="Instructor"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -109,10 +149,13 @@ export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
             />
             <FormField
               control={form.control}
-              name="instrument"
+              name="Instrument"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select an instrument" />
@@ -129,10 +172,13 @@ export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
             />
             <FormField
               control={form.control}
-              name="dayOfWeek"
+              name="Dayofweek"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a day" />
@@ -153,7 +199,7 @@ export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
             />
             <FormField
               control={form.control}
-              name="price"
+              name="Price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -167,7 +213,7 @@ export function AddCourseDialog({ onAddCourse }: AddCourseDialogProps) {
                 Cancel
               </Button>
               <Button type="submit" className="bg-pink-200 text-black hover:bg-pink-300">
-                Add Course
+                {course ? "Update Course" : "Add Course"}
               </Button>
             </div>
           </form>

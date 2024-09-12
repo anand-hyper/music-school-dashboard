@@ -32,10 +32,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full px-4 py-8">
-      
+
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-medium text-gray-400">LATEST ENROLMENTS</h2>
-        <a href="#" className="text-purple-600 hover:underline">View All Courses</a>
+        <a href="/courses" className="text-purple-600 hover:underline">View All Courses</a>
       </div>
       <div className="rounded-lg border shadow-sm w-full overflow-hidden">
         <Table className="w-full">

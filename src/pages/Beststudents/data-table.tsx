@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
     <div className="w-full px-4 py-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-medium text-gray-400">BEST STUDENTS</h2>
-        <a href="#" className="text-purple-600 hover:underline">View All Courses</a>
+        <a href="/courses" className="text-purple-600 hover:underline">View All Courses</a>
       </div>
       <div className="rounded-lg border shadow-sm w-full overflow-hidden">
         <Table className="w-full">
@@ -50,9 +50,9 @@ export function DataTable<TData, TValue>({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </TableHead>
               ))}
             </TableRow>
@@ -66,9 +66,8 @@ export function DataTable<TData, TValue>({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className={`px-4 py-2 text-sm text-gray-900 ${
-                      cell.column.id === 'RegDate' ? 'whitespace-nowrap' : ''
-                    }`}
+                    className={`px-4 py-2 text-sm text-gray-900 ${cell.column.id === 'RegDate' ? 'whitespace-nowrap' : ''
+                      }`}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

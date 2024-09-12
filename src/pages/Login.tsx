@@ -24,7 +24,8 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
 
   const handleLogin = () => {
     // Check for hardcoded credentials
-    if (email === "Anand" && password === "Sethu@123") {
+    if (email === "abc@gmail.com" && password === "123456") {
+      localStorage.setItem("login", "true")
       setIsAuthenticated(true);
       navigate("/home");
     } else {

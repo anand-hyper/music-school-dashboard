@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ScrollableCardContainer from "./pages/ScrollableCardContainer";
@@ -8,10 +8,15 @@ import Pages from "./pages/Beststudents/pages";
 import Pagee from "./pages/courselist/pagee";
 import { AddCourseDialog } from "./pages/Addcourse";
 import { TfiMenuAlt } from "react-icons/tfi";
-
+import { mockBestStudentsData } from "./pages/courselist/mock-data";
+import { Courses } from "./pages/courselist/columns";
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // State to manage authentication
 
+  useEffect(() => {
+    if (localStorage.getItem("login"))
+      setIsAuthenticated(true)
+  })
   return (
     <Router>
       <div className="flex">
@@ -37,6 +42,7 @@ const AppSidebar: React.FC<SidebarProps> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem("login");
     setIsAuthenticated(false); // Set authentication state to false
     navigate("/"); // Navigate to the login page
   };
@@ -55,15 +61,15 @@ const AppSidebar: React.FC<SidebarProps> = ({ setIsAuthenticated }) => {
           </Button>
         </Link>
         <div className="flex-1 flex items-end">
-        <Button
-          variant="ghost"
-          className="w-full items-end flex-1 mt-4"
-          onClick={handleLogout} // Logout function
-        >
-          <span className="mr-3">🚪</span> Logout
-        </Button>
+          <Button
+            variant="ghost"
+            className="w-full items-end flex-1 mt-4"
+            onClick={handleLogout} // Logout function
+          >
+            <span className="mr-3">🚪</span> Logout
+          </Button>
         </div>
-       
+
       </div>
     </div>
   );
@@ -85,19 +91,39 @@ const EnrollmentPage: React.FC = () => (
 );
 
 // Course Page Component
-const CoursePage: React.FC = () => (
-  <>
-    <div className="flex items-center justify-center">
-      <Pagee />
+const CoursePage: React.FC = () => {
+  const [data, setData] = useState<Courses[]>([]);
+  const getData = () => {
+    // Check if data exists in localStorage
+    const localData = localStorage.getItem("courses");
+
+    if (localData) {
+      // If data exists in localStorage, parse it and set it as the state
+      setData(JSON.parse(localData));
+    } else {
+      // If no data in localStorage, use mock data
+      setData(mockBestStudentsData);
+      localStorage.setItem("courses", JSON.stringify(mockBestStudentsData))
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  return (
+    <div>
+      <div className="flex items-center justify-center">
+        <Pagee data={data} />
+      </div>
+      <div className="flex items-center justify-end mr-5 mb-5">
+        <AddCourseDialog
+          onAddCourse={() => getData()}
+        />
+      </div>
     </div>
-    <div className="flex items-center justify-end mr-5 mb-5">
-      <AddCourseDialog
-        onAddCourse={(course: any) => {
-          console.log("New Course Added:", course);
-        }}
-      />
-    </div>
-  </>
-);
+  )
+
+}
 
 export default App;
