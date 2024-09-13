@@ -167,11 +167,15 @@ export function DataTable<TData, TValue>({
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleDelete(i)}> {/* Use row.original.id to access the row data */}
-                            Delete
-                          </DropdownMenuItem>
+                          
                           <DropdownMenuItem onClick={() => handleEdit(i)}> {/* Use row.original.id to access the row data */}
-                            Edit
+                            Edit Course
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(i)}> {/* Use row.original.id to access the row data */}
+                            Close Course
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(i)}> {/* Use row.original.id to access the row data */}
+                            Archive Course
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

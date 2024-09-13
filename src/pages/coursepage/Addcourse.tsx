@@ -203,7 +203,7 @@ export function AddCourseDialog({ onAddCourse, course }: AddCourseDialogProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="number" placeholder="Price" {...field} />
+                    <Input type="string" placeholder="Price" {...field} />
                   </FormControl>
                 </FormItem>
               )}
