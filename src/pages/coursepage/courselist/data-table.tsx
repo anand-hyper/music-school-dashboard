@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import {
   ColumnDef,
@@ -26,7 +26,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Courses } from './columns';
+
 import { AddCourseDialog } from '../Addcourse';
 
 interface DataTableProps<TData, TValue> {
@@ -74,7 +74,7 @@ export function DataTable<TData, TValue>({
   const [selectedCourse, setSelectedCourse] = useState<TData | null>(null);
 
   const handleEdit = (index: number) => {
-    const courseData = data.filter((item, i) => i == index);
+    const courseData = data.filter(( item, i) => i == index);
     console.log("EDIT SELE: ", courseData)
     setSelectedCourse(courseData[0])
   }

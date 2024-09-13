@@ -73,7 +73,7 @@ export const columns: ColumnDef<Courses>[] = [
   {
     accessorKey: "Action",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
